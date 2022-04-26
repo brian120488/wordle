@@ -31,7 +31,8 @@ class Button:
         window.blit(self.text_surface, (text_x, text_y))
         
         if self.outline_thickness != 0: # comment here
-            pygame.draw.rect(window, self.outline_color, self.button_rect, self.outline_radius)
+            pygame.draw.rect(window, self.outline_color, self.button_rect, 
+                             self.outline_thickness, self.outline_radius)
 
     def set_outline_style(self, outline_color, outline_thickness, outline_radius):
         self.outline_color = outline_color
