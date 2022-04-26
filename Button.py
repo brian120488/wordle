@@ -24,8 +24,12 @@ class Button:
 
     def draw(self, window):
         pygame.draw.rect(window, self.background_color, self.button_rect)
-        # come up with a mechanism to make sure that the letter/text is in the middle of the button
-        window.blit(self.text_surface, (self.x, self.y))
+        
+        text_width, text_height = self.text_surface.get_rect().size
+        text_x = self.x + self.width / 2 - text_width / 2
+        text_y = self.y + self.height / 2 - text_height / 2
+        window.blit(self.text_surface, (text_x, text_y))
+        
         if self.outline_thickness != 0: # comment here
             pygame.draw.rect(window, self.outline_color, self.button_rect, self.outline_radius)
 
