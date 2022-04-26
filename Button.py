@@ -5,7 +5,8 @@ class Button:
     def __init__(self, coords, size, font, text, text_size, text_color, background_color):
         self.x, self.y = coords
         self.width, self.height = size
-        self.button_rect = pygame.Rect(self.x, self.y, self.width, self.height) # comment here
+        self.button_rect = pygame.Rect(self.x - self.width / 2, self.y - self.height / 2, 
+                                       self.width, self.height)
         self.font = font
         self.text = text
         self.text_size = text_size
@@ -22,16 +23,16 @@ class Button:
         font = pygame.font.SysFont(self.font, self.text_size)
         self.text_surface = font.render(self.text, True, self.text_color)
 
-    def draw(self, window):
-        pygame.draw.rect(window, self.background_color, self.button_rect)
+    def draw(self, screen):
+        pygame.draw.rect(screen, self.background_color, self.button_rect)
         
         text_width, text_height = self.text_surface.get_rect().size
-        text_x = self.x + self.width / 2 - text_width / 2
-        text_y = self.y + self.height / 2 - text_height / 2
-        window.blit(self.text_surface, (text_x, text_y))
+        text_x = self.x - text_width / 2
+        text_y = self.y - text_height / 2
+        screen.blit(self.text_surface, (text_x, text_y))
         
-        if self.outline_thickness != 0: # comment here
-            pygame.draw.rect(window, self.outline_color, self.button_rect, 
+        if self.outline_thickness:
+            pygame.draw.rect(screen, self.outline_color, self.button_rect, 
                              self.outline_thickness, self.outline_radius)
 
     def set_outline_style(self, outline_color, outline_thickness, outline_radius):
@@ -42,13 +43,13 @@ class Button:
 
     def set_text_properties(self, *, text=None, text_size=None, text_color=None, font=None):
         # comment here
-        if text != None:
+        if text:
             self.text = text
-        if text_size != None:
+        if text_size:
             self.text_size = text_size
-        if text_size != None:
+        if text_size:
             self.text_color = text_color
-        if font != None:
+        if font:
             self.font = font
 
         self.make_surface()
