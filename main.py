@@ -33,7 +33,10 @@ while True:
     clock.tick(FPS)
     screen.fill(BACKGROUND)
     # display title so that it is always in the center
-
+    x = SCREEN_WIDTH / 2 - TITLE.get_width() / 2
+    y = TOPLINE / 2 - TITLE.get_height() / 2
+    screen.blit(TITLE, (x, y))
+    
     # display line across the screen
 
     # comment here and complete nested for loops to display guessing tiles
@@ -43,6 +46,7 @@ while True:
 
     for key in keys:
         key.draw(screen)
+        
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -54,4 +58,5 @@ while True:
                     key.click_method(current_row, current_letter)
 
     pygame.draw.line(screen, 'red', (SCREEN_WIDTH / 2, 0), (SCREEN_WIDTH / 2, 500))
+    pygame.draw.line(screen, 'red', (0, TOP_ROW), (500, TOP_ROW))
     pygame.display.update()
