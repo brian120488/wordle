@@ -34,11 +34,12 @@ while True:
     screen.fill(BACKGROUND)
     # display title so that it is always in the center
     x = SCREEN_WIDTH / 2 - TITLE.get_width() / 2
-    y = TOPLINE / 2 - TITLE.get_height() / 2
+    y = TOP_LINE / 2 - TITLE.get_height() / 2
     screen.blit(TITLE, (x, y))
     
     # display line across the screen
-
+    pygame.draw.line(screen, 'black', (0, TOP_LINE), (SCREEN_WIDTH, TOP_LINE))
+    
     # comment here and complete nested for loops to display guessing tiles
     for row in guess_buttons:
         for button in row:

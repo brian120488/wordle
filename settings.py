@@ -4,7 +4,7 @@ SCREEN_HEIGHT = 700
 FPS = 10
 
 TOP_ROW = 70
-TOPLINE = 35
+TOP_LINE = 35
 LEFT_COL = 40
 
 FONT = 'helvetica'
