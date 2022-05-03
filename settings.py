@@ -10,6 +10,9 @@ LEFT_COL = 40
 FONT = 'helvetica'
 TITLE_FONT = 'timesnewroman'
 TITLE_COLOR = 'black'
+TITLEFONT = pygame.font.SysFont(TITLE_FONT, 25)
+TITLEFONT.set_bold(True)
+TITLE = TITLEFONT.render('Wordle', True, TITLE_COLOR)
 
 BACKGROUND = (255, 255, 255)
 GUESS_ROWS, GUESS_COLS = 6, 5

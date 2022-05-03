@@ -45,15 +45,15 @@ class Button:
             pygame.draw.rect(screen, self.outline_color, self.button_rect, 
                              self.outline_thickness, self.outline_radius)
 
-    def set_outline_style(self, *, outline_color=None, outline_thickness=None, outline_radius=None):
-        if self.outline_color:
+    def set_outline_style(self, outline_color=None, outline_thickness=None, outline_radius=None):
+        if outline_color:
             self.outline_color = outline_color
-        if self.outline_thickness:
+        if outline_thickness:
             self.outline_thickness = outline_thickness
-        if self.outline_radius:
+        if outline_radius:
             self.outline_radius = outline_radius
 
-    def set_text_properties(self, *, text=None, text_size=None, text_color=None, font=None):
+    def set_text_properties(self, text=None, text_size=None, text_color=None, font=None):
         if text:
             self.text = text
         if text_size:
