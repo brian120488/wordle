@@ -6,6 +6,9 @@ pygame.init()
 pygame.display.set_caption('Wordle')
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock = pygame.time.Clock()
+TITLEFONT = pygame.font.SysFont(TITLE_FONT, 25)
+TITLEFONT.set_bold(True)
+TITLE = TITLEFONT.render('Wordle', True, TITLE_COLOR)
 
 def drawTitle(screen):
     x = SCREEN_WIDTH / 2 - TITLE.get_width() / 2
@@ -58,8 +61,8 @@ while True:
         for tile in row:
             tile.draw(screen)
 
-    for key in keys:
-        key.draw(screen)
+    # for key in keys:
+    #     key.draw(screen)
         
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
