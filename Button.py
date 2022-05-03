@@ -13,14 +13,24 @@ class Button:
         self.text_color = text_color
         self.enabled = False
         self.click_method = None
-        self.make_surface()
         self.background_color = background_color
         self.outline_thickness = 0
         self.outline_color = (255, 255, 255)
         self.outline_radius = 0
+        
+        self.font_bold = True
+        self.animation_height = 1
+        self.center = self.button_rect.center
+        self.next_text = ''
+        self.next_color = (0, 0, 0)
+        self.next_outline_thickness = 0
+        self.next_outline_color = (0, 0, 0)
+        
+        self.make_surface()
 
     def make_surface(self):
         font = pygame.font.SysFont(self.font, self.text_size)
+        font.set_bold(self.font_bold)
         self.text_surface = font.render(self.text, True, self.text_color)
 
     def draw(self, screen):
@@ -35,14 +45,15 @@ class Button:
             pygame.draw.rect(screen, self.outline_color, self.button_rect, 
                              self.outline_thickness, self.outline_radius)
 
-    def set_outline_style(self, outline_color, outline_thickness, outline_radius):
-        self.outline_color = outline_color
-        # outline thickness acts as a toggle = 0 is off
-        self.outline_thickness = outline_thickness
-        self.outline_radius = outline_radius
+    def set_outline_style(self, *, outline_color=None, outline_thickness=None, outline_radius=None):
+        if self.outline_color:
+            self.outline_color = outline_color
+        if self.outline_thickness:
+            self.outline_thickness = outline_thickness
+        if self.outline_radius:
+            self.outline_radius = outline_radius
 
     def set_text_properties(self, *, text=None, text_size=None, text_color=None, font=None):
-        # comment here
         if text:
             self.text = text
         if text_size:
@@ -52,4 +63,17 @@ class Button:
         if font:
             self.font = font
 
+        self.make_surface()
+        
+    def set_click_method(self, method):
+        self.click_method = method
+
+    def enable(self):
+        self.enable = True
+
+    def disable(self):
+        self.enabled = False
+        
+    def set_background_color(self, background_color):
+        self.background_color = background_color
         self.make_surface()
