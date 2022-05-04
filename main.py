@@ -24,7 +24,7 @@ def build_tiles():
             dx = (j + 1 - GUESS_COLS / 2) * (GUESS_TILE_SIZE[0] + GUESS_TILE_MARGIN) - GUESS_TILE_SIZE[0] / 2
             x = CENTER_X + dx
             y = TOP_ROW + i * (GUESS_TILE_SIZE[1] + GUESS_TILE_MARGIN)
-            tile = Button((x, y), GUESS_TILE_SIZE, FONT, alphabet[0], 16, GUESS_TEXT_COLOR, GUESS_BACKGROUND)
+            tile = Button((x, y), GUESS_TILE_SIZE, FONT, '', 16, GUESS_TEXT_COLOR, GUESS_BACKGROUND)
             tile.set_outline_style(GUESS_OUTLINE_COLOR, GUESS_OUTLINE_THICKNESS, GUESS_RADIUS)
             row.append(tile)
         tiles.append(row)
@@ -54,16 +54,52 @@ def build_row(keys, key_row, y):
             height = KEY_TILE_SIZE[1]
             if i == 0:
                 x = CENTER_X - 4.25 * KEY_TILE_SIZE[0] - 3.75 * KEY_MARGIN_X
-                build_key(keys, (x, y), 'ENTER', (width, height), 'keyPress')
+                build_key(keys, (x, y), 'ENTER', (width, height), enter)
             if i == len(key_row) - 1:
                 x = CENTER_X + 4.25 * KEY_TILE_SIZE[0] + 4.75 * KEY_MARGIN_X
-                build_key(keys, (x, y), 'DEL', (width, height), 'keyPress')
+                build_key(keys, (x, y), 'DEL', (width, height), delete)
         dx = (i + 1 - len(key_row) / 2) * (KEY_TILE_SIZE[0] + KEY_MARGIN_X) - KEY_TILE_SIZE[0] / 2
         x = CENTER_X + dx
-        build_key(keys, (x, y), letter, KEY_TILE_SIZE, 'keyPress')
+        build_key(keys, (x, y), letter, KEY_TILE_SIZE, keyPress)
+
+def keyPress(key):
+    global current_letter, current_row
+
+    if current_letter < 5:
+        tile = tiles[current_row][current_letter]
+        tile.set_text_properties(text=key)
+        tile.set_outline_style(outline_color=GUESSING_OUTLINE_COLOR)
+        current_letter += 1
+
+def delete(key):
+    global current_letter, current_row
+    
+    if current_letter > 0:
+        current_letter -= 1
+        tile = tiles[current_row][current_letter]
+        tile.set_text_properties(text='')
+        tile.set_outline_style(outline_color=GUESS_OUTLINE_COLOR)
+    
+
+def enter(key):
+    global current_letter, current_row
+    
+    if current_letter == 5:
+        for i in range(5):
+            tile = tiles[current_row][i]
+            if tile.text == word[i]:
+                new_color = GUESS_CORRECT
+            elif tile.text in word:
+                new_color = GUESS_IN_ANSWER
+            else:
+                new_color = GUESS_WRONG
+        # tiles[current_row][i].set_next_properties(new_color, 0, None, GUESS)
 
 tiles = build_tiles()
 keys = build_keys()
+current_letter = 0
+current_row = 0
+animation = []  # current buttons being animated
 while True:
     clock.tick(FPS)
     screen.fill(BACKGROUND)
@@ -83,8 +119,8 @@ while True:
             sys.exit()
         if event.type == pygame.MOUSEBUTTONUP:
             pos = pygame.mouse.get_pos()
-            for key in keys:
-                if key.enabled and key.button_rect.collidepoint(pos): # key was clicked!
-                    key.click_method(current_row, current_letter)
+            for key in keys.values():
+                if key.enabled and key.button_rect.collidepoint(pos):
+                    key.click_method(key.text)
 
     pygame.display.update()

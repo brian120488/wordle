@@ -20,6 +20,7 @@ class Button:
         
         self.font_bold = True
         self.animation_height = 1
+        self.animation_change = 0
         self.center = self.button_rect.center
         self.next_text = ''
         self.next_color = (0, 0, 0)
@@ -43,30 +44,42 @@ class Button:
         screen.blit(self.text_surface, (text_x, text_y))
 
     def set_outline_style(self, outline_color=None, outline_thickness=None, outline_radius=None):
-        if outline_color:
+        if outline_color is not None:
             self.outline_color = outline_color
-        if outline_thickness:
+        if outline_thickness is not None:
             self.outline_thickness = outline_thickness
-        if outline_radius:
+        if outline_radius is not None:
             self.outline_radius = outline_radius
 
     def set_text_properties(self, text=None, text_size=None, text_color=None, font=None):
-        if text:
+        if text is not None:
             self.text = text
-        if text_size:
+        if text_size is not None:
             self.text_size = text_size
-        if text_size:
+        if text_size is not None:
             self.text_color = text_color
-        if font:
+        if font is not None:
             self.font = font
 
         self.make_surface()
-        
+   
+    def set_next_properties(self, next_background=None, next_outline_thickness=None, next_text_color=None):
+        if next_background is not None:
+            self.next_background = next_background
+        if next_outline_thickness is not None:
+            self.next_outline_thickness = next_outline_thickness
+        if next_text_color is not None:
+            self.next_text_color = next_text_color
+
+    def flip_next(self):
+        if self.next_color is not None:
+            self.text_color = self.next_color
+
     def set_click_method(self, method):
         self.click_method = method
 
     def enable(self):
-        self.enable = True
+        self.enabled = True
 
     def disable(self):
         self.enabled = False
