@@ -49,15 +49,21 @@ def build_keys():
     
 def build_row(keys, key_row, y):
     for i, letter in enumerate(key_row):
+        if key_row == KEYROW3:
+            width = KEY_TILE_SIZE[0] * 1.5 + KEY_MARGIN_X / 2
+            height = KEY_TILE_SIZE[1]
+            if i == 0:
+                x = CENTER_X - 4.25 * KEY_TILE_SIZE[0] - 3.75 * KEY_MARGIN_X
+                build_key(keys, (x, y), 'ENTER', (width, height), 'keyPress')
+            if i == len(key_row) - 1:
+                x = CENTER_X + 4.25 * KEY_TILE_SIZE[0] + 4.75 * KEY_MARGIN_X
+                build_key(keys, (x, y), 'DEL', (width, height), 'keyPress')
         dx = (i + 1 - len(key_row) / 2) * (KEY_TILE_SIZE[0] + KEY_MARGIN_X) - KEY_TILE_SIZE[0] / 2
         x = CENTER_X + dx
         build_key(keys, (x, y), letter, KEY_TILE_SIZE, 'keyPress')
-    if key_row == KEYROW3:
-        pass
 
 tiles = build_tiles()
 keys = build_keys()
-print(keys)
 while True:
     clock.tick(FPS)
     screen.fill(BACKGROUND)

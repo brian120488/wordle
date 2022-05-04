@@ -41,7 +41,6 @@ class Button:
         text_x = self.x - text_width / 2
         text_y = self.y - text_height / 2
         screen.blit(self.text_surface, (text_x, text_y))
-    
 
     def set_outline_style(self, outline_color=None, outline_thickness=None, outline_radius=None):
         if outline_color:
