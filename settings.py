@@ -1,6 +1,7 @@
 # ================= environment variables ===========================
-SCREEN_WIDTH = 500
+SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 700
+CENTER_X = SCREEN_WIDTH / 2
 FPS = 10
 
 TOP_ROW = 100

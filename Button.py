@@ -34,16 +34,14 @@ class Button:
         self.text_surface = font.render(self.text, True, self.text_color)
 
     def draw(self, screen):
-        pygame.draw.rect(screen, self.background_color, self.button_rect)
+        pygame.draw.rect(screen, self.outline_color, self.button_rect, 
+                             self.outline_thickness, self.outline_radius)
         
         text_width, text_height = self.text_surface.get_rect().size
         text_x = self.x - text_width / 2
         text_y = self.y - text_height / 2
         screen.blit(self.text_surface, (text_x, text_y))
-        
-        if self.outline_thickness:
-            pygame.draw.rect(screen, self.outline_color, self.button_rect, 
-                             self.outline_thickness, self.outline_radius)
+    
 
     def set_outline_style(self, outline_color=None, outline_thickness=None, outline_radius=None):
         if outline_color:
