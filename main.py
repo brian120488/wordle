@@ -9,6 +9,7 @@ clock = pygame.time.Clock()
 TITLEFONT = pygame.font.SysFont(TITLE_FONT, 25)
 TITLEFONT.set_bold(True)
 TITLE = TITLEFONT.render('Wordle', True, TITLE_COLOR)
+word = "carab"
 
 def drawTitle(screen):
     x = SCREEN_WIDTH / 2 - TITLE.get_width() / 2
@@ -78,8 +79,7 @@ def delete(key):
         current_letter -= 1
         tile = tiles[current_row][current_letter]
         tile.set_text_properties(text='')
-        tile.set_outline_style(outline_color=GUESS_OUTLINE_COLOR)
-    
+        tile.set_outline_style(outline_color=GUESS_OUTLINE_COLOR)  
 
 def enter(key):
     global current_letter, current_row
@@ -93,7 +93,11 @@ def enter(key):
                 new_color = GUESS_IN_ANSWER
             else:
                 new_color = GUESS_WRONG
-        # tiles[current_row][i].set_next_properties(new_color, 0, None, GUESS)
+            tiles[current_row][i].set_next_properties(new_color, 0, None, GUESS)
+            if i == 0:
+                tiles[current_row][i].animation_change = -ANIMATION_SPEED
+                animation.append((current, 0))
+        current_row += 1
 
 tiles = build_tiles()
 keys = build_keys()
@@ -106,8 +110,28 @@ while True:
     drawTitle(screen)
     pygame.draw.line(screen, 'black', (0, TOP_LINE), (SCREEN_WIDTH, TOP_LINE))
     
-    for row in tiles:
-        for tile in row:
+    for row in range(len(tiles)):
+        for col in range(len(tiles[0])):
+            tile = tiles[row][col]
+            if (row, col) in animation:
+                if len(animation) == 1 and col < 4 and tile.animation_height <= 0.2:
+                    next_tile = tiles[row][col + 1]
+                    next_tile.animation_change = -ANIMATION_SPEED
+                    animation.append((row, col + 1))
+                tile.animation_height += round(tile.animation_change, 2)
+                if tile.animation_height <= 0:
+                    tile.animation_change *= -1
+                    tile.animation_height = round(tile.animation_change, 2)
+                    tile.flip_next()
+                elif tile.animation_height >= 1:
+                    tile.animation_height = 1
+                    tile.animation_change = 0
+                    animation.remove((row, col))
+                    if col == 4:
+                        for i in range(5):
+                            if keys[tiles[row][i].text].background_color != GUESS_CORRECT:
+                                keys[tiles[row][i].text].background_color = tiles[row][i].background_color
+                                keys[tiles[row][i].text].make_surface()
             tile.draw(screen)
 
     for key in keys.values():
