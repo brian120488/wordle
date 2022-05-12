@@ -1,4 +1,4 @@
-import pygame, sys, random
+import pygame, sys, random, configparser
 from settings import *
 from Button import *
 
@@ -135,6 +135,25 @@ def word_is_valid(solution, current_row):
         pygame.display.update()
     return False
 
+config = configparser.ConfigParser(interpolation=configparser.ExtendedInterpolation())
+config.read('scores.ini') 
+def update_stats():
+    scores = [int(score) for score in config['stats']['scores'].split(', ')]
+    current_streak = int(config['stats']['current_streak'])
+    max_streak = int(config['stats']['max_streak'])
+    if current_row < 6:
+        current_streak += 1
+        if current_streak > max_streak:
+            max_streak = current_streak
+    else:
+        streak = 0
+    scores[current_row] = int(scores[current_row]) + 1
+    config.set('stats', 'scores', scores)
+    config.set('stats', 'current_streak', current_streak)
+    config.set('stats', 'max_streak', max_streak)
+    with open('config.ini', 'w') as configfile:
+        config.write(configfile)
+    
 def check_win(tiles):
     row_word = "".join([tile.text for tile in tiles[current_row]])
     return row_word == solution
@@ -164,7 +183,7 @@ def animate_win_screen(screen, results):
 pygame.init()
 pygame.display.set_caption('Wordle')
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-clock = pygame.time.Clock()       
+clock = pygame.time.Clock()      
 tiles = build_tiles()
 keys = build_keys()
 current_letter = 0
@@ -173,7 +192,7 @@ animation = []  # current buttons being animated
 solutions = load_file_into_set('solutions.txt')
 valid_guesses = load_file_into_set('valid_guesses.txt')
 solution = random.choice(tuple(solutions)).upper()
-results = []
+print(solution)
 is_game_over = False
 while True:
     clock.tick(FPS)
@@ -211,10 +230,10 @@ while True:
     for key in keys.values():
         key.draw(screen)
         
-    if is_game_over:
-        font = pygame.font.SysFont(self.font, self.text_size)
-        font.set_bold(self.font_bold)
-        self.text_surface = font.render(self.text, True, self.text_color)
+    # if is_game_over:
+    #     font = pygame.font.SysFont(self.font, self.text_size)
+    #     font.set_bold(self.font_bold)
+    #     self.text_surface = font.render(self.text, True, self.text_color)
         
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -225,6 +244,6 @@ while True:
             for key in keys.values():
                 if key.enabled and key.button_rect.collidepoint(pos):
                     key.click_method(key.text)
-
-    animate_win_screen(screen, results)
+    
+    # animate_win_screen(screen, results)
     pygame.display.update()
