@@ -15,7 +15,6 @@ class Button:
         self.click_method = None
         self.background_color = background_color
         self.outline_thickness = 0
-        self.outline_color = (255, 255, 255)
         self.outline_radius = 0
         
         self.font_bold = True
@@ -23,9 +22,10 @@ class Button:
         self.animation_change = 0
         self.center = self.button_rect.center
         self.next_text = ''
-        self.next_text_color = (0, 0, 0)
-        self.next_outline_thickness = 0
-        self.next_outline_color = (0, 0, 0)
+        self.next_background_color = None
+        self.next_text_color = None
+        self.next_outline_thickness = None
+        self.next_outline_color = None
         
         self.make_surface()
 
@@ -40,18 +40,19 @@ class Button:
             animated_rect = pygame.Rect(x, y, self.width, self.height)
             animated_rect.height = self.animation_height * self.button_rect.height
             animated_rect.center = self.button_rect.center
-            pygame.draw.rect(screen, self.background_color, animated_rect, 0, self.outline_radius)
+            pygame.draw.rect(screen, self.background_color, animated_rect, self.outline_thickness, self.outline_radius)
             
             animated_size = self.text_surface.get_size()
-            animated_size[1] *=  self.animation_height
+            animated_size = (animated_size[0], animated_size[1] * self.animation_height)
             animated_surface = pygame.transform.scale(self.text_surface, animated_size)
-            animated_surface_rect = animated_surface.get_rect()
-            animated_surface_rect.center = self.button_rect.center
-            screen.blit(animated_surface, animated_surface_rect.center)
+
+            text_width, text_height = animated_surface.get_rect().size
+            text_x = self.x - text_width / 2
+            text_y = self.y - text_height / 2
+            screen.blit(animated_surface, (text_x, text_y))
             return
         
-        pygame.draw.rect(screen, self.outline_color, self.button_rect, 
-                             self.outline_thickness, self.outline_radius) 
+        pygame.draw.rect(screen, self.background_color, self.button_rect, self.outline_thickness, self.outline_radius) 
         text_width, text_height = self.text_surface.get_rect().size
         text_x = self.x - text_width / 2
         text_y = self.y - text_height / 2
@@ -59,7 +60,7 @@ class Button:
 
     def set_outline_style(self, outline_color=None, outline_thickness=None, outline_radius=None):
         if outline_color is not None:
-            self.outline_color = outline_color
+            self.background_color = outline_color
         if outline_thickness is not None:
             self.outline_thickness = outline_thickness
         if outline_radius is not None:
@@ -90,14 +91,11 @@ class Button:
             self.text_color = self.next_text_color
             self.next_text_color = None
         if self.next_background_color is not None:
-            self.background_color = next_background_color
+            self.background_color = self.next_background_color
             self.next_background_color = None
         if self.next_outline_thickness is not None:
             self.outline_thickness = self.next_outline_thickness
             self.next_outline_thickness = None
-        if self.next_outline_color is not None:
-            self.outline_color = self.next_outline_color
-            self.next_outline_color = None
             
         self.make_surface()
 
