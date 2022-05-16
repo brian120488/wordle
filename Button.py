@@ -20,6 +20,9 @@ class Button:
         self.font_bold = True
         self.animation_height = 1
         self.animation_change = 0
+        self.dance_height = 25
+        self.dance_change = 5
+        self.dance_accel = 2
         self.center = self.button_rect.center
         self.next_text = ''
         self.next_background_color = None
@@ -52,6 +55,8 @@ class Button:
             screen.blit(animated_surface, (text_x, text_y))
             return
         
+        self.button_rect = pygame.Rect(self.x - self.width / 2, self.y - self.height / 2, 
+                                       self.width, self.height)
         pygame.draw.rect(screen, self.background_color, self.button_rect, self.outline_thickness, self.outline_radius) 
         text_width, text_height = self.text_surface.get_rect().size
         text_x = self.x - text_width / 2

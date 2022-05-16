@@ -158,27 +158,33 @@ def check_win(tiles):
     row_word = "".join([tile.text for tile in tiles[current_row]])
     return row_word == solution
   
-def animate_win_screen(screen, results):
+def animate_win_screen(screen, tiles):
+    global dance_animation, current_dance
+    if current_dance < 5:
+        tile = tiles[current_row][current_dance]
+        tile.prevY = tile.y
+        dance_animation.append(tile)
+        current_dance += 1
+            
+    for i in range(len(dance_animation) - 1, -1, -1):
+        tile = dance_animation[i]
+        tile.y -= tile.dance_change
+        tile.dance_change += tile.dance_accel
+        if tile.y <= tile.prevY - tile.dance_height:
+            tile.dance_change *= -1
+        if tile.y >= tile.prevY:
+            tile.y = tile.prevY
+            dance_animation.remove(tile)
+                
+                
+        if len(dance_animation) == 0: return
+
+def display_answer(screen):
     font = pygame.font.SysFont(FONT, 20)
-    text_surface = font.render('Test', True, (200, 0, 0), (0,0,200))
+    text_surface = font.render(solution, True, (0, 0, 0))
     text_x = SCREEN_WIDTH / 2 - text_surface.get_width() / 2
-    text_y = SCREEN_HEIGHT / 2 - text_surface.get_height() / 2
-    text_width = text_surface.get_width()
-    text_height = text_surface.get_height()
-    text_rect = pygame.Rect(text_x, text_y, text_width, text_height)
-    surface = pygame.Surface((200, 100))
-    surface.fill((0, 0, 0))
-    surface_x = SCREEN_WIDTH / 2 - surface.get_width() / 2
-    surface_y = SCREEN_HEIGHT / 2 - surface.get_height() / 2
-    surface.blit(text_surface, (surface_x, surface_y))
-    surface.set_alpha(50)
-    screen.blit(surface, text_rect)
-    
-    # text_surface = font.render(result[current_row], True, 'black') 
-    # text_width, text_height = self.text_surface.get_rect().size
-    # text_x = SCREEN_WIDTH / 2 - text_width / 2
-    # text_y = SCREEN_HEIGHT / 2 - text_height / 2
-    # screen.blit(text_surface, (text_x, text_y))  
+    text_y = TOP_LINE * 1.2
+    screen.blit(text_surface, (text_x, text_y)) 
 
 pygame.init()
 pygame.display.set_caption('Wordle')
@@ -194,14 +200,25 @@ valid_guesses = load_file_into_set('valid_guesses.txt')
 solution = random.choice(tuple(solutions)).upper()
 print(solution)
 is_game_over = False
+dance_animation = []
+current_dance = 0
 while True:
     clock.tick(FPS)
     screen.fill(BACKGROUND)
     draw_title(screen)
+    
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+        if event.type == pygame.MOUSEBUTTONUP:
+            pos = pygame.mouse.get_pos()
+            for key in keys.values():
+                if key.enabled and key.button_rect.collidepoint(pos):
+                    key.click_method(key.text)
+
     pygame.draw.line(screen, 'black', (0, TOP_LINE), (SCREEN_WIDTH, TOP_LINE))
-    
-    update_tile_animations(animation)
-    
+    update_tile_animations(animation) 
     for row in range(len(tiles)):
         for col in range(len(tiles[0])):
             tile = tiles[row][col]
@@ -220,30 +237,20 @@ while True:
                     animation.remove((row, col))
                     if col == 4:
                         updateKeyboard(tiles, keys)
-                        if check_win(tiles):
-                            pass
-                        else:
-                            current_row += 1
-                            current_letter = 0
+                        if check_win(tiles) and len(animation) == 0:
+                            print('won')
+                            current_row -= 1
+                            is_game_over = True
+                        current_row += 1
+                        current_letter = 0
+                        
             tile.draw(screen)
 
     for key in keys.values():
         key.draw(screen)
         
-    # if is_game_over:
-    #     font = pygame.font.SysFont(self.font, self.text_size)
-    #     font.set_bold(self.font_bold)
-    #     self.text_surface = font.render(self.text, True, self.text_color)
-        
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-        if event.type == pygame.MOUSEBUTTONUP:
-            pos = pygame.mouse.get_pos()
-            for key in keys.values():
-                if key.enabled and key.button_rect.collidepoint(pos):
-                    key.click_method(key.text)
+    if is_game_over:
+        display_answer(screen)
+        animate_win_screen(screen, tiles)
     
-    # animate_win_screen(screen, results)
     pygame.display.update()
