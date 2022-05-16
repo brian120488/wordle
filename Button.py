@@ -20,9 +20,9 @@ class Button:
         self.font_bold = True
         self.animation_height = 1
         self.animation_change = 0
-        self.dance_height = 25
-        self.dance_change = 5
-        self.dance_accel = 2
+        self.dance_height = 30
+        self.dance_change = 2
+        self.dance_accel = .5
         self.center = self.button_rect.center
         self.next_text = ''
         self.next_background_color = None
