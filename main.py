@@ -60,7 +60,7 @@ def build_row(keys, key_row, y):
 def keyPress(key):
     global current_letter, current_row
 
-    if current_letter < 5:
+    if current_letter < 5 and current_row < 6:
         tile = tiles[current_row][current_letter]
         tile.set_text_properties(text=key)
         tile.set_outline_style(outline_color=GUESSING_OUTLINE_COLOR)
@@ -126,7 +126,7 @@ def word_is_valid(solution, current_row):
         return True
     
     invalid_button = Button(INVALID_GUESS_COORDS, INVALID_GUESS_SIZE, FONT, 
-                'Not in word list', INVALID_GUESS_TEXT_SIZE, GUESS_TEXT_COLOR, (0,0,0))
+                'Not in word list', INVALID_GUESS_TEXT_SIZE, GUESS_TEXT_COLOR, (255, 255, 255))
     invalid_button.set_outline_style(None, 0, KEY_RADIUS)
     j = 0
     while j < 50:
@@ -158,7 +158,7 @@ def check_win(tiles):
     row_word = "".join([tile.text for tile in tiles[current_row]])
     return row_word == solution
   
-def animate_win_screen(screen, tiles):
+def animate_win_screen(tiles):
     global dance_animation, current_dance
     if current_dance < 5:
         tile = tiles[current_row][current_dance]
@@ -174,8 +174,7 @@ def animate_win_screen(screen, tiles):
             tile.dance_change *= -1
         if tile.y >= tile.prevY:
             tile.y = tile.prevY
-            dance_animation.remove(tile)
-                
+            dance_animation.remove(tile)  
                 
         if len(dance_animation) == 0: return
 
@@ -249,8 +248,12 @@ while True:
     for key in keys.values():
         key.draw(screen)
         
+    if current_row >= 6:
+        is_game_over = True
+    
     if is_game_over:
         display_answer(screen)
-        animate_win_screen(screen, tiles)
+        if current_row < 6:
+            animate_win_screen(tiles)
     
     pygame.display.update()

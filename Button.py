@@ -22,7 +22,7 @@ class Button:
         self.animation_change = 0
         self.dance_height = 30
         self.dance_change = 2
-        self.dance_accel = .5
+        self.dance_accel = .25
         self.center = self.button_rect.center
         self.next_text = ''
         self.next_background_color = None
